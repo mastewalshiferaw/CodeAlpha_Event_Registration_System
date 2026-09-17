@@ -90,7 +90,7 @@ async function handleCreateEvent(e) {
   }
 }
 
-// Registration logo
+// Registration logic
 function openRegisterModal(id, title) {
   document.getElementById('regEventId').value = id;
   document.getElementById('modalEventTitle').innerText = `Register for: ${title}`;
