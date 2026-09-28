@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EventHub &bull; Modern Event Registration</title>
+  <title>EventHub &bull; RBAC Platform</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
@@ -16,10 +16,6 @@
           fontFamily: {
             sans: ['"Plus Jakarta Sans"', 'sans-serif'],
             mono: ['"Space Grotesk"', 'monospace']
-          },
-          boxShadow: {
-            'neumorph-light': '5px 5px 12px #d1d5db, -5px -5px 12px #ffffff',
-            'neumorph-dark': '4px 4px 10px #08080a, -4px -4px 10px #18181c'
           }
         }
       }
@@ -43,93 +39,85 @@
   <header class="border-b border-zinc-200 dark:border-zinc-800/80 bg-white/80 dark:bg-[#0c0c0e]/80 backdrop-blur-md sticky top-0 z-40 transition-colors">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
       
-      <!-- Brand Logo -->
-      <div class="flex items-center gap-3">
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-3">
         <div class="w-8 h-8 bg-zinc-900 text-white dark:bg-white dark:text-black rounded-xl flex items-center justify-center font-extrabold text-sm shadow-sm transition-colors">
           ◈
         </div>
         <div>
-          
+          <span class="text-[10px] font-mono font-bold tracking-widest text-zinc-500 uppercase">CodeAlpha</span>
           <h1 class="text-sm font-bold text-zinc-900 dark:text-white leading-none">EVENT HUB</h1>
         </div>
-      </div>
+      </a>
 
-      <!-- Actions & Reference-Accurate Toggle -->
-      <div class="flex items-center gap-4">
-        
-        <!-- Soft Pill Theme Toggle (Matches Image Reference) -->
+      <!-- Controls -->
+      <div class="flex items-center gap-3">
+        <!-- Theme Toggle -->
         <button 
           onclick="toggleTheme()" 
           id="themeToggleBtn"
           aria-label="Toggle Theme"
-          class="relative w-14 h-8 rounded-full p-1 transition-all duration-300 bg-zinc-200 dark:bg-[#18181c] border border-zinc-300/80 dark:border-zinc-700/60 shadow-inner flex items-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-zinc-400">
+          class="relative w-14 h-8 rounded-full p-1 transition-all duration-300 bg-zinc-200 dark:bg-[#18181c] border border-zinc-300/80 dark:border-zinc-700/60 shadow-inner flex items-center cursor-pointer focus:outline-none">
           <div 
             id="toggleThumb" 
             class="w-6 h-6 rounded-full flex items-center justify-center transform transition-all duration-300 shadow-md bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 translate-x-0 dark:translate-x-6">
-            <!-- Sun Icon (Light Mode) -->
-            <svg id="sunIcon" class="w-3.5 h-3.5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="4" stroke-width="2" stroke="currentColor"></circle>
-              <path stroke-linecap="round" stroke-width="2" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
-            </svg>
-            <!-- Moon Icon (Dark Mode) -->
-            <svg id="moonIcon" class="w-3.5 h-3.5 hidden dark:block" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12.3 4.9c.4-.2.6-.7.5-1.1-.1-.4-.5-.8-1-.8C6.2 3 2 7.2 2 12.8c0 5.5 4.5 10 10 10 5.2 0 9.5-3.9 9.9-9.1.1-.5-.3-.9-.7-1-.4-.1-.9.1-1.1.5-1.5 2.4-4.1 4-7.1 4-4.6 0-8.4-3.8-8.4-8.4 0-3.3 1.9-6.2 4.7-7.6.4-.3.6-.8.5-1.3z"/>
-            </svg>
+            <svg id="sunIcon" class="w-3.5 h-3.5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" stroke-width="2" stroke="currentColor"></circle><path stroke-linecap="round" stroke-width="2" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+            <svg id="moonIcon" class="w-3.5 h-3.5 hidden dark:block" fill="currentColor" viewBox="0 0 24 24"><path d="M12.3 4.9c.4-.2.6-.7.5-1.1-.1-.4-.5-.8-1-.8C6.2 3 2 7.2 2 12.8c0 5.5 4.5 10 10 10 5.2 0 9.5-3.9 9.9-9.1.1-.5-.3-.9-.7-1-.4-.1-.9.1-1.1.5-1.5 2.4-4.1 4-7.1 4-4.6 0-8.4-3.8-8.4-8.4 0-3.3 1.9-6.2 4.7-7.6.4-.3.6-.8.5-1.3z"/></svg>
           </div>
         </button>
 
-        <button onclick="toggleManageModal()" class="hidden sm:inline-flex text-xs font-semibold px-4 py-2 rounded-full border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60 transition">
-          My Registrations
+        <button onclick="toggleManageModal()" class="text-xs font-semibold px-4 py-2 rounded-full border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60 transition">
+          My Tickets
         </button>
-        <button onclick="openCreateModal()" class="text-xs font-semibold px-4 py-2 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-black hover:opacity-90 transition flex items-center gap-1.5 shadow-sm">
-          <span>+</span> Create Event
-        </button>
+
+        <!-- Dynamic Auth / Role Section -->
+        <div id="authNavSection"></div>
       </div>
     </div>
   </header>
 
-  <!-- Hero Header & Search / Filters Area -->
+  <!-- Banner for Dedicated Shared Event Link -->
+  <div id="sharedEventBanner" class="hidden bg-indigo-600 text-white text-xs py-2.5 px-4 text-center font-medium">
+    <span>🔗 Viewing shared presentation session &bull; </span>
+    <button onclick="clearSharedView()" class="underline font-bold ml-1">View All Events</button>
+  </div>
+
+  <!-- Hero Section -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6 w-full">
     <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-6 border-b border-zinc-200 dark:border-zinc-800/80 transition-colors">
-      
       <div>
-        <p class="text-xs font-mono uppercase tracking-[0.2em] text-zinc-500 mb-2">Event Registration System</p>
+        <p class="text-xs font-mono uppercase tracking-[0.2em] text-zinc-500 mb-2">Role-Based Event Architecture</p>
         <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
           Discover & Attend <br class="hidden sm:inline" />
           <span class="text-transparent bg-clip-text bg-gradient-to-r from-zinc-900 via-zinc-600 to-zinc-400 dark:from-zinc-100 dark:via-zinc-400 dark:to-zinc-600">PREMIER EVENTS.</span>
         </h2>
       </div>
 
-      <!-- Search and Filter Bar -->
+      <!-- Search & Filters -->
       <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto items-stretch sm:items-center">
-        <!-- Search Input -->
-        <div class="relative min-w-[240px]">
+        <div class="relative min-w-[220px]">
           <input 
             type="text" 
             id="searchInput" 
             oninput="handleSearch(this.value)"
-            placeholder="Search events, topics..." 
+            placeholder="Search events, organizers..." 
             class="w-full bg-white dark:bg-[#121215] border border-zinc-300 dark:border-zinc-800 rounded-full pl-9 pr-4 py-2 text-xs text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 outline-none focus:border-zinc-500 shadow-xs transition" 
           />
-          <svg class="w-4 h-4 absolute left-3 top-2.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-          </svg>
+          <svg class="w-4 h-4 absolute left-3 top-2.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </div>
 
-        <!-- Filter Pills -->
         <div class="flex items-center gap-1 bg-zinc-200/70 dark:bg-[#18181b] p-1 rounded-full border border-zinc-300/80 dark:border-zinc-800 overflow-x-auto">
-          <button onclick="setFilter('ALL')" id="filter-ALL" class="filter-btn text-xs font-semibold px-3.5 py-1.5 rounded-full bg-white dark:bg-white text-zinc-900 dark:text-black shadow-xs transition whitespace-nowrap">All</button>
-          <button onclick="setFilter('TECH')" id="filter-TECH" class="filter-btn text-xs font-semibold px-3.5 py-1.5 rounded-full text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition whitespace-nowrap">Tech</button>
-          <button onclick="setFilter('BUSINESS')" id="filter-BUSINESS" class="filter-btn text-xs font-semibold px-3.5 py-1.5 rounded-full text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition whitespace-nowrap">Business</button>
-          <button onclick="setFilter('ONLINE')" id="filter-ONLINE" class="filter-btn text-xs font-semibold px-3.5 py-1.5 rounded-full text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition whitespace-nowrap">Online</button>
-          <button onclick="setFilter('WORKSHOP')" id="filter-WORKSHOP" class="filter-btn text-xs font-semibold px-3.5 py-1.5 rounded-full text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition whitespace-nowrap">Workshop</button>
+          <button onclick="setFilter('ALL')" id="filter-ALL" class="filter-btn text-xs font-semibold px-3.5 py-1.5 rounded-full bg-white dark:bg-white text-zinc-900 dark:text-black shadow-xs transition">All</button>
+          <button onclick="setFilter('TECH')" id="filter-TECH" class="filter-btn text-xs font-semibold px-3.5 py-1.5 rounded-full text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition">Tech</button>
+          <button onclick="setFilter('BUSINESS')" id="filter-BUSINESS" class="filter-btn text-xs font-semibold px-3.5 py-1.5 rounded-full text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition">Business</button>
+          <button onclick="setFilter('ONLINE')" id="filter-ONLINE" class="filter-btn text-xs font-semibold px-3.5 py-1.5 rounded-full text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition">Online</button>
+          <button onclick="setFilter('WORKSHOP')" id="filter-WORKSHOP" class="filter-btn text-xs font-semibold px-3.5 py-1.5 rounded-full text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition">Workshop</button>
         </div>
       </div>
-
     </div>
   </section>
 
-  <!-- Responsive Event Grid -->
+  <!-- Events Grid -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-1">
     <div id="eventsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div class="col-span-full text-center py-20 text-zinc-400 dark:text-zinc-500 font-mono text-sm">
@@ -138,14 +126,14 @@
     </div>
   </main>
 
-  <!-- Register Modal -->
+  <!-- ================= REGISTER MODAL (ATTENDEE / PUBLIC) ================= -->
   <div id="registerModal" class="hidden fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
     <div class="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 max-w-lg w-full shadow-2xl relative transition-colors">
       <button onclick="closeRegisterModal()" class="absolute top-6 right-6 text-zinc-400 hover:text-zinc-900 dark:hover:text-white font-mono text-xl">&times;</button>
       
-      <p class="text-[11px] font-mono uppercase tracking-widest text-zinc-400 dark:text-zinc-500">Step &bull; 01</p>
+      <p class="text-[11px] font-mono uppercase tracking-widest text-zinc-400 dark:text-zinc-500">Attendee Pass</p>
       <h3 class="text-2xl font-bold mt-1 text-zinc-900 dark:text-white tracking-tight" id="modalEventTitle">Registration</h3>
-      <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1 mb-6">Leave all your info here to reserve your pass.</p>
+      <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1 mb-6">Enter your contact details to reserve your seat pass instantly.</p>
 
       <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-5">
         <input type="hidden" id="regEventId" />
@@ -155,7 +143,7 @@
             <span class="mono-num text-[11px] font-bold px-2 py-0.5 rounded border border-zinc-300 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400">01</span>
             <label class="text-[11px] font-mono font-semibold tracking-wider text-zinc-500 dark:text-zinc-400 uppercase">I'M</label>
           </div>
-          <input type="text" id="regName" required placeholder="Enter full name" class="w-full bg-transparent text-sm text-zinc-900 dark:text-white pt-2 pb-1 outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 font-medium" />
+          <input type="text" id="regName" required placeholder="Full Name" class="w-full bg-transparent text-sm text-zinc-900 dark:text-white pt-2 pb-1 outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 font-medium" />
         </div>
 
         <div class="border-b border-zinc-200 dark:border-zinc-800 pb-2 focus-within:border-zinc-900 dark:focus-within:border-white transition">
@@ -186,7 +174,118 @@
     </div>
   </div>
 
-  <!-- Manage Tickets Modal -->
+  <!-- ================= AUTH MODAL (WITH ROLE SELECTION) ================= -->
+  <div id="authModal" class="hidden fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+    <div class="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 max-w-md w-full shadow-2xl relative transition-colors">
+      <button onclick="closeAuthModal()" class="absolute top-6 right-6 text-zinc-400 hover:text-zinc-900 dark:hover:text-white font-mono text-xl">&times;</button>
+      
+      <div class="flex gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-3 mb-6">
+        <button onclick="switchAuthTab('login')" id="tabLogin" class="text-sm font-bold pb-1 border-b-2 border-indigo-600 text-zinc-900 dark:text-white transition">Log In</button>
+        <button onclick="switchAuthTab('register')" id="tabRegister" class="text-sm font-medium pb-1 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition">Create Account</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">Email</label>
+          <input type="email" id="loginEmail" required placeholder="user@domain.com" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-indigo-500" />
+        </div>
+        <div>
+          <label class="block text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">Password</label>
+          <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-indigo-500" />
+        </div>
+        <button type="submit" class="w-full py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold uppercase tracking-wider transition shadow-sm">
+          Sign In
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="signupForm" onsubmit="handleSignup(event)" class="hidden space-y-3.5">
+        <div>
+          <label class="block text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">Account Role</label>
+          <select id="signRole" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-indigo-500 font-semibold">
+            <option value="ORGANIZER">👑 Organizer (Create & Host Events)</option>
+            <option value="ADMIN">🛡️ Super Admin (Full Platform Control)</option>
+            <option value="ATTENDEE">🎟️ Attendee (Book & Manage Tickets)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">Full Name</label>
+          <input type="text" id="signName" required placeholder="Jane Doe" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-indigo-500" />
+        </div>
+        <div>
+          <label class="block text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">Organization / Brand</label>
+          <input type="text" id="signOrg" placeholder="e.g. CodeAlpha Tech" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-indigo-500" />
+        </div>
+        <div>
+          <label class="block text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">Email</label>
+          <input type="email" id="signEmail" required placeholder="jane@domain.com" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-indigo-500" />
+        </div>
+        <div>
+          <label class="block text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">Password</label>
+          <input type="password" id="signPassword" required placeholder="Minimum 6 characters" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-indigo-500" />
+        </div>
+        <button type="submit" class="w-full py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold uppercase tracking-wider transition shadow-sm">
+          Register Account
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= SUPER ADMIN METRICS PANEL ================= -->
+  <div id="adminModal" class="hidden fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+    <div class="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 max-w-2xl w-full shadow-2xl relative transition-colors">
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <p class="text-[11px] font-mono uppercase tracking-widest text-indigo-500 font-bold">Platform Governance</p>
+          <h3 class="text-2xl font-bold text-zinc-900 dark:text-white">🛡️ Super Admin Control Center</h3>
+        </div>
+        <button onclick="closeAdminModal()" class="text-zinc-400 hover:text-zinc-900 dark:hover:text-white font-mono text-xl">&times;</button>
+      </div>
+
+      <!-- KPI Metrics Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+        <div class="bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-4 rounded-2xl">
+          <p class="text-[10px] font-mono text-zinc-500 uppercase">Total Events</p>
+          <h4 id="admTotalEvents" class="text-2xl font-bold text-zinc-900 dark:text-white mt-1">0</h4>
+        </div>
+        <div class="bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-4 rounded-2xl">
+          <p class="text-[10px] font-mono text-zinc-500 uppercase">Total Registrations</p>
+          <h4 id="admTotalRegs" class="text-2xl font-bold text-indigo-500 mt-1">0</h4>
+        </div>
+        <div class="bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-4 rounded-2xl">
+          <p class="text-[10px] font-mono text-zinc-500 uppercase">Confirmed Passes</p>
+          <h4 id="admActivePasses" class="text-2xl font-bold text-emerald-500 mt-1">0</h4>
+        </div>
+        <div class="bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-4 rounded-2xl">
+          <p class="text-[10px] font-mono text-zinc-500 uppercase">Total Users</p>
+          <h4 id="admTotalUsers" class="text-2xl font-bold text-zinc-900 dark:text-white mt-1">0</h4>
+        </div>
+      </div>
+
+      <div class="border-t border-zinc-200 dark:border-zinc-800 pt-4 flex justify-between items-center text-xs text-zinc-500 font-mono">
+        <span>Admin Authority: You can delete ANY event or view ANY attendee roster.</span>
+        <button onclick="closeAdminModal()" class="px-4 py-2 bg-zinc-200 dark:bg-zinc-800 rounded-full font-bold text-zinc-800 dark:text-zinc-200">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= ATTENDEE ROSTER MODAL ================= -->
+  <div id="rosterModal" class="hidden fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+    <div class="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-7 max-w-xl w-full shadow-2xl relative transition-colors">
+      <div class="flex justify-between items-center mb-4">
+        <div>
+          <p class="text-[11px] font-mono uppercase tracking-widest text-zinc-400 dark:text-zinc-500">Live Roster</p>
+          <h3 class="text-xl font-bold text-zinc-900 dark:text-white" id="rosterEventTitle">Registered Attendees</h3>
+        </div>
+        <button onclick="closeRosterModal()" class="text-zinc-400 hover:text-zinc-900 dark:hover:text-white font-mono text-xl">&times;</button>
+      </div>
+
+      <div id="rosterList" class="space-y-2.5 max-h-80 overflow-y-auto pr-1"></div>
+    </div>
+  </div>
+
+  <!-- ================= MANAGE TICKETS (PUBLIC) ================= -->
   <div id="manageModal" class="hidden fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
     <div class="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-7 max-w-xl w-full shadow-2xl relative transition-colors">
       <div class="flex justify-between items-center mb-6">
@@ -208,13 +307,13 @@
     </div>
   </div>
 
-  <!-- Create Event Modal -->
+  <!-- ================= CREATE EVENT MODAL ================= -->
   <div id="createEventModal" class="hidden fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
     <div class="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-7 max-w-lg w-full shadow-2xl relative transition-colors">
       <div class="flex justify-between items-center mb-4">
         <div>
-          <p class="text-[11px] font-mono uppercase tracking-widest text-zinc-400 dark:text-zinc-500">Organizer Portal</p>
-          <h3 class="text-xl font-bold text-zinc-900 dark:text-white">Create New Event</h3>
+          <p class="text-[11px] font-mono uppercase tracking-widest text-indigo-500 font-bold">Studio Dashboard</p>
+          <h3 class="text-xl font-bold text-zinc-900 dark:text-white">Publish New Event</h3>
         </div>
         <button onclick="closeCreateModal()" class="text-zinc-400 hover:text-zinc-900 dark:hover:text-white font-mono text-xl">&times;</button>
       </div>
@@ -222,48 +321,48 @@
       <form id="createEventForm" onsubmit="handleCreateEvent(event)" class="space-y-3">
         <div>
           <label class="block text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">Title</label>
-          <input type="text" id="evTitle" required placeholder="e.g. AI & Next-Gen Systems" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-zinc-500" />
+          <input type="text" id="evTitle" required placeholder="e.g. NextGen Cloud Architecture" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-indigo-500" />
         </div>
         <div>
           <label class="block text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">Description</label>
-          <textarea id="evDesc" required rows="2" placeholder="Brief summary of the talk or workshop..." class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-zinc-500"></textarea>
+          <textarea id="evDesc" required rows="2" placeholder="Summary of the presentation..." class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-indigo-500"></textarea>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">Organizer</label>
-            <input type="text" id="evOrganizer" placeholder="" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-zinc-500" />
+            <label class="block text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">Organizer / Host</label>
+            <input type="text" id="evOrganizer" placeholder="e.g. CodeAlpha Labs" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-indigo-500" />
           </div>
           <div>
             <label class="block text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">Price / Fee</label>
-            <input type="text" id="evPrice" placeholder="Free / $15 / €20" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-zinc-500" />
+            <input type="text" id="evPrice" placeholder="Free / $25" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-indigo-500" />
           </div>
         </div>
 
         <div>
           <label class="block text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">Custom Image URL (Optional)</label>
-          <input type="url" id="evImageUrl" placeholder="Leave blank to use minimal date graphic" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-zinc-500" />
+          <input type="url" id="evImageUrl" placeholder="Leave blank to use minimal date card" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-indigo-500" />
         </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">Date & Time</label>
-            <input type="datetime-local" id="evDate" required class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-zinc-500" />
+            <input type="datetime-local" id="evDate" required class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-indigo-500" />
           </div>
           <div>
-            <label class="block text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">Total Capacity</label>
-            <input type="number" id="evCapacity" min="1" required placeholder="50" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-zinc-500" />
+            <label class="block text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">Capacity</label>
+            <input type="number" id="evCapacity" min="1" required placeholder="100" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-indigo-500" />
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">Location</label>
-            <input type="text" id="evLocation" required placeholder="Online (Zoom) / City Hall" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-zinc-500" />
+            <input type="text" id="evLocation" required placeholder="Online / City Center" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-indigo-500" />
           </div>
           <div>
             <label class="block text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1">Category</label>
-            <select id="evCategory" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-zinc-500">
+            <select id="evCategory" class="w-full bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-900 dark:text-white outline-none focus:border-indigo-500">
               <option value="Tech">Tech</option>
               <option value="Business">Business</option>
               <option value="Online">Online</option>
@@ -273,8 +372,8 @@
         </div>
 
         <div class="pt-3 flex justify-end gap-2">
-          <button type="button" onclick="closeCreateModal()" class="text-xs font-semibold px-4 py-2 rounded-full text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white">Cancel</button>
-          <button type="submit" class="text-xs font-bold px-6 py-2.5 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-black hover:opacity-90 uppercase tracking-wider transition">Publish Event</button>
+          <button type="button" onclick="closeCreateModal()" class="text-xs font-semibold px-4 py-2 rounded-full text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">Cancel</button>
+          <button type="submit" class="text-xs font-bold px-6 py-2.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white uppercase tracking-wider transition">Publish Live</button>
         </div>
       </form>
     </div>
@@ -282,7 +381,7 @@
 
   <!-- Footer -->
   <footer class="border-t border-zinc-200 dark:border-zinc-800/80 py-6 text-center text-xs font-mono text-zinc-400 dark:text-zinc-500 mt-auto transition-colors">
-    &bull; Event Registration System
+    CodeAlpha Task 2 &bull; Enterprise RBAC Event System (Admin / Organizer / Attendee)
   </footer>
 
   <script src="/app.js"></script>
