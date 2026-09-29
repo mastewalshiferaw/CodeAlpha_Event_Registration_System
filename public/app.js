@@ -4,9 +4,20 @@ let currentFilter = 'ALL';
 let searchQuery = '';
 let currentUser = null;
 
-// ==========================================
-// 🔐 AUTH & RBAC STATE MANAGEMENT
-// ==========================================
+function togglePasswordVisibility(inputId, iconId) {
+  const input = document.getElementById(inputId);
+  const icon = document.getElementById(iconId);
+  if (!input) return;
+
+  if (input.type === 'password') {
+    input.type = 'text';
+    if (icon) icon.innerText = 'HIDE';
+  } else {
+    input.type = 'password';
+    if (icon) icon.innerText = 'SHOW';
+  }
+}
+
 function getAuthToken() {
   return localStorage.getItem('auth_token');
 }
@@ -18,17 +29,13 @@ function renderAuthNavbar() {
 
   if (token && user) {
     currentUser = user;
-    const roleBadge = user.role === 'ADMIN' 
-      ? '🛡️ ADMIN' 
-      : user.role === 'ORGANIZER' 
-      ? '👑 ORGANIZER' 
-      : '🎟️ ATTENDEE';
+    const roleLabel = (user.role || 'ORGANIZER').toUpperCase();
 
     container.innerHTML = `
       <div class="flex items-center gap-2">
         ${user.role === 'ADMIN' ? `
-          <button onclick="openAdminModal()" class="text-xs font-bold px-3 py-2 rounded-full bg-purple-600 text-white hover:bg-purple-700 transition flex items-center gap-1 shadow-sm">
-            <span>🛡️</span> Admin Hub
+          <button onclick="openAdminModal()" class="text-xs font-semibold px-3.5 py-2 rounded-full border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60 text-zinc-900 dark:text-white transition">
+            Admin Hub
           </button>
         ` : ''}
 
@@ -38,8 +45,10 @@ function renderAuthNavbar() {
           </button>
         ` : ''}
 
-        <div class="flex items-center gap-2 pl-2 border-l border-zinc-300 dark:border-zinc-700">
-          <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400">${roleBadge} &bull; ${user.name.split(' ')[0]}</span>
+        <div class="flex items-center gap-2 pl-2 border-l border-zinc-200 dark:border-zinc-800">
+          <span class="text-[11px] font-mono uppercase tracking-wider px-2.5 py-1 rounded-full border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200">
+            ${roleLabel} &bull; ${user.name.split(' ')[0]}
+          </span>
           <button onclick="handleLogout()" class="text-[11px] font-mono text-zinc-400 hover:text-red-500 transition">Logout</button>
         </div>
       </div>
@@ -47,8 +56,8 @@ function renderAuthNavbar() {
   } else {
     currentUser = null;
     container.innerHTML = `
-      <button onclick="openAuthModal('login')" class="text-xs font-semibold px-4 py-2 rounded-full bg-indigo-600 text-white hover:bg-indigo-700 transition shadow-sm">
-        Sign In / Portal
+      <button onclick="openAuthModal('login')" class="text-xs font-semibold px-4 py-2 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-black hover:opacity-90 transition shadow-sm">
+        Sign In
       </button>
     `;
   }
@@ -72,19 +81,19 @@ function switchAuthTab(tab) {
   if (tab === 'login') {
     loginForm.classList.remove('hidden');
     signupForm.classList.add('hidden');
-    tabLogin.className = 'text-sm font-bold pb-1 border-b-2 border-indigo-600 text-zinc-900 dark:text-white transition';
+    tabLogin.className = 'text-sm font-bold pb-1 border-b-2 border-zinc-900 dark:border-white text-zinc-900 dark:text-white transition';
     tabRegister.className = 'text-sm font-medium pb-1 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition';
   } else {
     loginForm.classList.add('hidden');
     signupForm.classList.remove('hidden');
-    tabRegister.className = 'text-sm font-bold pb-1 border-b-2 border-indigo-600 text-zinc-900 dark:text-white transition';
+    tabRegister.className = 'text-sm font-bold pb-1 border-b-2 border-zinc-900 dark:border-white text-zinc-900 dark:text-white transition';
     tabLogin.className = 'text-sm font-medium pb-1 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition';
   }
 }
 
 async function handleLogin(e) {
   e.preventDefault();
-  const email = document.getElementById('loginEmail').value;
+  const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
 
   try {
@@ -94,26 +103,26 @@ async function handleLogin(e) {
       body: JSON.stringify({ email, password })
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message);
+    if (!res.ok) throw new Error(data.message || 'Login failed');
 
     localStorage.setItem('auth_token', data.token);
     localStorage.setItem('auth_user', JSON.stringify(data.user));
 
-    alert(`✅ ${data.message} Logged in as [${data.user.role}]`);
+    alert(`${data.message} Authenticated as [${data.user.role}]`);
     closeAuthModal();
     renderAuthNavbar();
     fetchEvents();
   } catch (err) {
-    alert('⚠️ ' + err.message);
+    alert(err.message);
   }
 }
 
 async function handleSignup(e) {
   e.preventDefault();
   const role = document.getElementById('signRole').value;
-  const name = document.getElementById('signName').value;
-  const organization = document.getElementById('signOrg').value;
-  const email = document.getElementById('signEmail').value;
+  const name = document.getElementById('signName').value.trim();
+  const organization = document.getElementById('signOrg').value.trim();
+  const email = document.getElementById('signEmail').value.trim();
   const password = document.getElementById('signPassword').value;
 
   try {
@@ -123,17 +132,17 @@ async function handleSignup(e) {
       body: JSON.stringify({ name, organization, email, password, role })
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message);
+    if (!res.ok) throw new Error(data.message || 'Registration failed');
 
     localStorage.setItem('auth_token', data.token);
     localStorage.setItem('auth_user', JSON.stringify(data.user));
 
-    alert(`🎉 Account created with role: [${data.user.role}]`);
+    alert(`Account created with role: [${data.user.role}]`);
     closeAuthModal();
     renderAuthNavbar();
     fetchEvents();
   } catch (err) {
-    alert('⚠️ ' + err.message);
+    alert(err.message);
   }
 }
 
@@ -144,9 +153,6 @@ function handleLogout() {
   fetchEvents();
 }
 
-// ==========================================
-// 🛡️ SUPER ADMIN HUB
-// ==========================================
 async function openAdminModal() {
   const token = getAuthToken();
   if (!token || !currentUser || currentUser.role !== 'ADMIN') return alert('Admin access only.');
@@ -172,15 +178,11 @@ function closeAdminModal() {
   document.getElementById('adminModal').classList.add('hidden');
 }
 
-// ==========================================
-// 🗑️ DELETE EVENT (CREATOR OR ADMIN)
-// ==========================================
 async function deleteEvent(eventId, eventTitle) {
   const token = getAuthToken();
   if (!token) return alert('Please sign in.');
 
-  const roleText = currentUser.role === 'ADMIN' ? '(Super Admin Override)' : '';
-  if (!confirm(`⚠️ Are you sure you want to permanently delete "${eventTitle}"? ${roleText}`)) return;
+  if (!confirm(`Are you sure you want to permanently delete "${eventTitle}"?`)) return;
 
   try {
     const res = await fetch(`${API_URL}/events/${eventId}`, {
@@ -190,25 +192,20 @@ async function deleteEvent(eventId, eventTitle) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.message);
 
-    alert('🗑️ ' + data.message);
+    alert(data.message);
     fetchEvents();
   } catch (err) {
-    alert('⚠️ ' + err.message);
+    alert(err.message);
   }
 }
 
-// ==========================================
-// 🌓 THEME TOGGLE
-// ==========================================
 function toggleTheme() {
   const html = document.documentElement;
   const isDark = html.classList.toggle('dark');
   localStorage.setItem('theme', isDark ? 'dark' : 'light');
 }
 
-// ==========================================
-// 📅 TOP CALENDAR BOX GRAPHIC
-// ==========================================
+// Fallback card visual when no event image is present or fails to load
 function renderCalendarGraphic(dateStr, category) {
   const d = new Date(dateStr);
   const month = d.toLocaleString('en-US', { month: 'short' }).toUpperCase();
@@ -244,9 +241,6 @@ function renderCalendarGraphic(dateStr, category) {
   `;
 }
 
-// ==========================================
-// 1. FETCH & RENDER EVENTS
-// ==========================================
 async function fetchEvents() {
   const container = document.getElementById('eventsList');
 
@@ -281,7 +275,7 @@ function clearSharedView() {
 function copyPublicLink(eventId, eventTitle) {
   const url = `${window.location.origin}/?event=${eventId}`;
   navigator.clipboard.writeText(url);
-  alert(`📋 Copied Public Link for "${eventTitle}":\n\n${url}\n\nShare this link with anyone to present and register!`);
+  alert(`Copied Public Link for "${eventTitle}":\n\n${url}\n\nShare this link with anyone to present and register.`);
 }
 
 function handleSearch(val) {
@@ -343,7 +337,8 @@ function renderFilteredEvents() {
     const organizer = e.organizer || 'CodeAlpha Events';
     const isOwner = currentUser && e.organizerId === currentUser.id;
     const isAdmin = currentUser && currentUser.role === 'ADMIN';
-    const canManage = isOwner || isAdmin;
+    const isLegacy = !e.organizerId && currentUser && ['ORGANIZER', 'ADMIN'].includes(currentUser.role);
+    const canManage = isOwner || isAdmin || isLegacy;
 
     const headerVisual = e.imageUrl 
       ? `
@@ -365,15 +360,13 @@ function renderFilteredEvents() {
 
           <div class="flex items-center justify-between mb-2.5">
             <div class="flex items-center gap-1.5 text-xs font-medium text-zinc-500 dark:text-zinc-400">
-              <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-600"></span>
               <span class="truncate max-w-[140px]">${organizer}</span>
             </div>
 
             <div class="flex items-center gap-1.5">
-              <button onclick="copyPublicLink('${e._id}', '${e.title.replace(/'/g, "\\'")}')" title="Copy Public Presentation Link" class="p-1 rounded-full text-zinc-400 hover:text-indigo-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
-                </svg>
+              <button onclick="copyPublicLink('${e._id}', '${e.title.replace(/'/g, "\\'")}')" title="Copy Public Link" class="p-1 rounded-full text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
               </button>
 
               <span class="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full ${
@@ -401,23 +394,18 @@ function renderFilteredEvents() {
           </div>
 
           <div class="flex items-center gap-1.5">
-            <!-- Delete Button (Only Owner or Admin) -->
             ${canManage ? `
-              <button onclick="deleteEvent('${e._id}', '${e.title.replace(/'/g, "\\'")}')" title="Delete Event Permanently" class="p-2 rounded-full text-red-500 hover:bg-red-50 dark:hover:bg-red-950/50 transition">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                </svg>
+              <button onclick="deleteEvent('${e._id}', '${e.title.replace(/'/g, "\\'")}')" title="Delete Event" class="p-2 rounded-full text-red-500 hover:bg-red-50 dark:hover:bg-red-950/50 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
               </button>
             ` : ''}
 
-            <!-- Roster Button (Only Owner or Admin) -->
             ${canManage ? `
-              <button onclick="viewAttendees('${e._id}', '${e.title.replace(/'/g, "\\'")}')" class="px-2.5 py-2 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100 transition">
+              <button onclick="viewAttendees('${e._id}', '${e.title.replace(/'/g, "\\'")}')" class="px-3 py-2 rounded-full text-xs font-semibold border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60 text-zinc-900 dark:text-white transition">
                 Roster
               </button>
             ` : ''}
 
-            <!-- Public Register Button -->
             <button 
               onclick="openRegisterModal('${e._id}', '${e.title.replace(/'/g, "\\'")}')"
               ${isSoldOut ? 'disabled' : ''}
@@ -427,9 +415,7 @@ function renderFilteredEvents() {
                   : 'bg-zinc-200 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-600 cursor-not-allowed'
               }">
               ${!isSoldOut ? `
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
-                </svg>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
                 <span>Pass</span>
               ` : '<span>Sold Out</span>'}
             </button>
@@ -440,9 +426,6 @@ function renderFilteredEvents() {
   }).join('');
 }
 
-// ==========================================
-// 2. PUBLIC REGISTRATION
-// ==========================================
 function openRegisterModal(id, title) {
   document.getElementById('regEventId').value = id;
   document.getElementById('modalEventTitle').innerText = title;
@@ -473,17 +456,14 @@ async function handleRegister(e) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || 'Failed to register');
 
-    alert('✦ ' + data.message);
+    alert(data.message);
     closeRegisterModal();
     fetchEvents();
   } catch (err) {
-    alert('⚠️ ' + err.message);
+    alert(err.message);
   }
 }
 
-// ==========================================
-// 3. ATTENDEE ROSTER VIEW
-// ==========================================
 async function viewAttendees(eventId, eventTitle) {
   const token = getAuthToken();
   if (!token) return alert('Please sign in.');
@@ -524,13 +504,10 @@ function closeRosterModal() {
   document.getElementById('rosterModal').classList.add('hidden');
 }
 
-// ==========================================
-// 4. CREATE EVENT (ORGANIZER OR ADMIN)
-// ==========================================
 function openCreateModal() {
   const token = getAuthToken();
   if (!token) {
-    alert('🔒 Please sign in as Organizer or Admin to publish events.');
+    alert('Please sign in as Organizer or Admin to publish events.');
     openAuthModal('login');
     return;
   }
@@ -571,18 +548,15 @@ async function handleCreateEvent(e) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.message || 'Failed to create event');
 
-    alert('✦ Event published successfully!');
+    alert('Event published successfully.');
     closeCreateModal();
     document.getElementById('createEventForm').reset();
     fetchEvents();
   } catch (err) {
-    alert('⚠️ ' + err.message);
+    alert(err.message);
   }
 }
 
-// ==========================================
-// 5. MANAGE TICKETS (PUBLIC)
-// ==========================================
 function toggleManageModal() {
   document.getElementById('manageModal').classList.toggle('hidden');
 }
@@ -633,7 +607,7 @@ async function cancelRegistration(id) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.message);
 
-    alert('✦ Pass cancelled successfully.');
+    alert('Pass cancelled successfully.');
     fetchUserRegistrations();
     fetchEvents();
   } catch (err) {
@@ -641,6 +615,5 @@ async function cancelRegistration(id) {
   }
 }
 
-// Initial Call
 renderAuthNavbar();
 fetchEvents();

@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { JWT_SECRET, requireAuth } = require('../middleware/auth');
 
-
+// 1. SIGN UP
 router.post('/register', async (req, res) => {
   try {
     const { name, email, password, organization, role } = req.body;
@@ -28,7 +28,7 @@ router.post('/register', async (req, res) => {
       name: name.trim(),
       email: email.toLowerCase().trim(),
       password: hashedPassword,
-      organization: organization || 'Independent',
+      organization: organization ? organization.trim() : 'Independent',
       role: userRole
     });
 
@@ -50,7 +50,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-//LOG IN
+// 2. LOG IN
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
