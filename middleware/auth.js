@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'codealpha_super_secret_jwt_key_2026';
 
-// Verify User Token
+// 1. Verify User Token
 function requireAuth(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -19,7 +19,7 @@ function requireAuth(req, res, next) {
   }
 }
 
-// Enforce Role Permissions
+// 2. Enforce Role Permissions
 function requireRole(...allowedRoles) {
   return (req, res, next) => {
     if (!req.user || !allowedRoles.includes(req.user.role)) {
